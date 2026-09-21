@@ -30,9 +30,14 @@ X_train_df, X_test_df, y_train_df, y_test_df = train_test_split(
 def preprocess_data(input_df, fit_scaler = None):
     df = input_df.copy()
 
-    # 补充空缺数据：age用中位数，embarked用众数
-    age_median = df["Age"].median()
-    embarked_mode = df["Embarked"].mode()[0]
+    # 补充空缺数据：age用中位数，embarked用众数（测试集填充训练集的统计值）
+    if fit_scaler is None:
+        age_median = df["Age"].median()
+        embarked_mode = df["Embarked"].mode()[0]
+    else:
+        age_median = fit_scaler["age_median"]
+        embarked_mode = fit_scaler["embarked_mode"]
+
     df["Age"] = df["Age"].fillna(age_median)
     df["Embarked"] = df["Embarked"].fillna(embarked_mode)
 
